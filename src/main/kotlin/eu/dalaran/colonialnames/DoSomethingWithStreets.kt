@@ -22,29 +22,42 @@ class DoSomethingWithStreets : ApplicationRunner {
 			}
 
 		val names = Json.decodeFromStream<List<String>>(ownResource("names.json")).map {
-			val nameLowercase = it.lowercase()
+			val nameLowercase = it.lowercase().replace("von", "").replace("-", " ")
+
+			val withUmlauts = nameLowercase.split("\\s+".toRegex())
+
+			val withoutUmlauts = nameLowercase
+				.replace("\u00f6", "oe")
+				.replace("\u00e4", "ae")
+				.replace("\u00fc", "ue")
+				.replace("\u00df", "ss")
+				.split("\\s+".toRegex())
+
+			val nameParts = withUmlauts.plus(withoutUmlauts).groupBy { t -> t }.map { z -> z.key }
+
 			Name(
 				name = it,
 				nameLowercase,
-				nameParts = nameLowercase.split(" ")
-
+				nameParts = nameParts
 			)
 		}
 
-
 		val result = names.map { name ->
-			Result(name.name, locations =
+			Result(name.name, searchElements = name.nameParts, locations =
 			locations.map {
 				val matches = name.nameParts.filter { np -> it.streetLowercase.contains(np) }.size
 				ResultMatch(
 					matches = matches,
 					location = it
 				)
-			}.filter { it.matches >= 1 }
-
+			}.filter {
+				if (name.nameParts.size == 1) {
+					it.matches == 1
+				} else {
+					it.matches >= 2
+				}
+			}
 			)
-
 		}
-
 	}
 }
