@@ -21,8 +21,9 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.0")
+	implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.13.4")
+	testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
 
 tasks.withType<KotlinCompile> {

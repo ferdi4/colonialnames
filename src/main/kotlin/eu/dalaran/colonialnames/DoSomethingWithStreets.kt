@@ -1,11 +1,13 @@
 package eu.dalaran.colonialnames
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromStream
 import org.springframework.boot.ApplicationArguments
 import org.springframework.boot.ApplicationRunner
 import org.springframework.stereotype.Component
+import java.io.File
 
 @Component
 class DoSomethingWithStreets : ApplicationRunner {
@@ -59,5 +61,9 @@ class DoSomethingWithStreets : ApplicationRunner {
 			}
 			)
 		}
+
+		val mapper = ObjectMapper()
+		val resultText = mapper.writeValueAsString(result)
+		File("colonial-names.json").writeText(resultText)
 	}
 }
